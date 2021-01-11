@@ -6,7 +6,7 @@ const fs = require('fs');
 function downloadVideo(url, filename) {
   const request = https.get(url, function(response) {
     if (response.statusCode === 200) {
-        var file = fs.createWriteStream(`/Users/grant/Desktop/YVU/merged_videos_output/${filename}.mp4`);
+        var file = fs.createWriteStream(`/Users/grant/Desktop/YVU/downloaded_gifs/${filename}.mp4`);
         response.pipe(file);
     }
     request.setTimeout(60000, function() { // if after 60s file not downloaded, we abort a request 
@@ -28,9 +28,28 @@ const r = new snoowrap({
 
   r.getHot("gifs").
   then( (data) => {
-    data = data.slice(1);
-    data.forEach( (post, index) => {
-      console.log(post?.preview);
+
+    // data.forEach( (post) => {
+    //   console.log("before getting sorted", "\n", post?.preview?.reddit_video_preview?.height, " ",post?.preview?.reddit_video_preview?.width);
+    // })
+    let sortedData = data.slice(1).filter( (post) => {
+      return post?.preview?.reddit_video_preview !== undefined
+    });
+
+    sortedData.sort( (a,b) => {
+      if (b?.preview?.reddit_video_preview?.height !== a?.preview?.reddit_video_preview?.height ) {
+        return b?.preview?.reddit_video_preview?.height - a?.preview?.reddit_video_preview?.height
+      } else {
+        return b?.preview?.reddit_video_preview?.width - a?.preview?.reddit_video_preview?.width
+      }
+    });
+
+    // sortedData.forEach( (post) => {
+    //   console.log("after getting sorted", "\n", post?.preview?.reddit_video_preview?.height, " ",post?.preview?.reddit_video_preview?.width);
+    // })
+    
+    sortedData.forEach( (post, index) => {
+      console.log(post?.preview?.reddit_video_preview?.fallback_url, "\n", post?.title);
       if (post?.preview?.reddit_video_preview) {
         downloadVideo(post?.preview?.reddit_video_preview?.fallback_url, `${index} - ${post?.title}`);
       }

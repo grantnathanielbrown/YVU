@@ -45,11 +45,11 @@ async function runSample(fileName) {
       notifySubscribers: false,
       requestBody: {
         snippet: {
-          title: 'Node.js YouTube Upload Test',
-          description: 'Testing YouTube upload via Google APIs Node.js Client',
+          title: `Daily r/gifs Highlights: `,
+          description: 'A daily compilation of the most viewed videos on the r/gifs subreddit.',
         },
         status: {
-          privacyStatus: 'private',
+          privacyStatus: 'public',
         },
       },
       media: {
